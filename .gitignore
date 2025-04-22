@@ -28,3 +28,6 @@ go.work.sum
 
 # JetBrains IDE
 .idea/
+
+# Sqlite db
+todo-cli.db
