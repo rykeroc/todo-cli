@@ -12,8 +12,6 @@ type Item interface {
 	GetId() int64
 	GetName() string
 	SetName(name string)
-	GetDueAt() time.Time
-	SetDueAt(time time.Time)
 	GetUpdatedAt() time.Time
 	SetUpdatedAt(time time.Time)
 	GetCreatedAt() time.Time
@@ -25,7 +23,6 @@ type Item interface {
 type item struct {
 	id        int64
 	name      string
-	dueAt     time.Time
 	updatedAt time.Time
 	createdAt time.Time
 }
@@ -35,14 +32,12 @@ type item struct {
 func NewItem(
 	id int64,
 	name string,
-	dueAt time.Time,
 	updatedAt time.Time,
 	createdAt time.Time,
 ) Item {
 	return &item{
 		id:        id,
 		name:      name,
-		dueAt:     dueAt,
 		updatedAt: updatedAt,
 		createdAt: createdAt,
 	}
@@ -52,14 +47,13 @@ func NewItem(
 // Create a new instance of item by scanning a sql.Rows struct.
 func NewItemFromRow(rows *sql.Rows) (Item, error) {
 	var item item
-	var dueAtTimestamp, updatedAtTimestamp, createdAtTimestamp int64
+	var updatedAtTimestamp, createdAtTimestamp int64
 
-	err := rows.Scan(&item.id, &item.name, &dueAtTimestamp, &updatedAtTimestamp, &createdAtTimestamp)
+	err := rows.Scan(&item.id, &item.name, &updatedAtTimestamp, &createdAtTimestamp)
 	if err != nil {
 		return &item, fmt.Errorf("NewItemFromRow: %v", err)
 	}
 
-	item.dueAt = time.Unix(dueAtTimestamp, 0)
 	item.updatedAt = time.Unix(updatedAtTimestamp, 0)
 	item.createdAt = time.Unix(createdAtTimestamp, 0)
 
@@ -82,18 +76,6 @@ func (item *item) GetName() string {
 // Sets the name of the item.
 func (item *item) SetName(name string) {
 	item.name = name
-}
-
-// GetDueAt godoc
-// Returns the time that the item is due.
-func (item *item) GetDueAt() time.Time {
-	return item.dueAt
-}
-
-// SetDueAt godoc
-// Sets the time that the item is due.
-func (item *item) SetDueAt(time time.Time) {
-	item.dueAt = time
 }
 
 // GetUpdatedAt godoc

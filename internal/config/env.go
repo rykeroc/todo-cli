@@ -15,6 +15,7 @@ func LoadEnv() error {
 	// Check if the required environment variables are set
 	var requiredVars = []string{
 		"DB_DATASOURCE_NAME",
+		"LOG_LEVEL",
 	}
 
 	for _, v := range requiredVars {

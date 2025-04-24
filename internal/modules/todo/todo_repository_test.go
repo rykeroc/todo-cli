@@ -1,25 +1,23 @@
 package todo
 
 import (
+	"github.com/rykeroc/todo-cli/internal/testutils"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
-	"log"
 	"testing"
 	"time"
-	"todo-cli/internal/testutils"
 )
 
 var testItems = []Item{
 	NewItem(
 		0,
-		"some item with no due date",
-		time.Unix(0, 0),
+		"item",
 		time.Now(),
 		time.Now(),
 	),
 	NewItem(
 		0,
-		"some item with due date",
-		time.Now().AddDate(0, 0, 7),
+		"another item",
 		time.Now(),
 		time.Now(),
 	),
@@ -109,7 +107,6 @@ func TestUpdateItemById_Success(t *testing.T) {
 		itemToUpdate := NewItem(
 			1,
 			"new name",
-			time.Now().AddDate(0, 0, 14),
 			time.Now(),
 			testItems[0].GetCreatedAt(),
 		)
@@ -131,13 +128,9 @@ func TestUpdateItemById_ItemNotExist(t *testing.T) {
 	repository := NewSqliteRepository(fixture.Db)
 
 	t.Run("should affect 0 rows", func(t *testing.T) {
-		itemToUpdate := NewItem(
-			10,
-			"new name",
-			time.Now().AddDate(0, 0, 14),
-			time.Now(),
-			time.Now(),
-		)
+		itemToUpdate := testItems[0]
+		itemToUpdate.SetName("new name")
+		itemToUpdate.SetUpdatedAt(time.Now())
 
 		affectedRows, err := repository.UpdateItemById(itemToUpdate)
 		assert.NoError(t, err)

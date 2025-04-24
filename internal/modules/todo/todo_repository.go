@@ -3,7 +3,7 @@ package todo
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 // Repository godoc
@@ -45,13 +45,12 @@ func (repo *sqliteRepository) PersistItem(itemToPersist Item) (int64, error) {
 	}
 
 	query := fmt.Sprintf(
-		"INSERT INTO %s (displayName, dueAt, updatedAt, createdAt) VALUES (?, ?, ?, ?)",
+		"INSERT INTO %s (displayName, updatedAt, createdAt) VALUES (?, ?, ?)",
 		tableName,
 	)
 	result, err := repo.db.Exec(
 		query,
 		itemToPersist.GetName(),
-		itemToPersist.GetDueAt().Unix(),
 		itemToPersist.GetUpdatedAt().Unix(),
 		itemToPersist.GetCreatedAt().Unix(),
 	)
@@ -128,13 +127,12 @@ func (repo *sqliteRepository) UpdateItemById(itemToUpdate Item) (int64, error) {
 	}
 
 	query := fmt.Sprintf(
-		"UPDATE %s SET displayName = ?, dueAt = ?, updatedAt = ? WHERE id = ?",
+		"UPDATE %s SET displayName = ?, updatedAt = ? WHERE id = ?",
 		tableName,
 	)
 	result, err := repo.db.Exec(
 		query,
 		itemToUpdate.GetName(),
-		itemToUpdate.GetDueAt().Unix(),
 		itemToUpdate.GetUpdatedAt().Unix(),
 		itemToUpdate.GetId(),
 	)

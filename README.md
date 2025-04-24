@@ -55,3 +55,15 @@ Refer [here](https://github.com/golang-migrate/migrate) for information about us
 ### SQLite
 
 Refer [here](https://www.sqlitetutorial.net/what-is-sqlite/) for information about `SQLite` operations.
+
+### Cobra
+
+`cobra` is used to support the CLI behaviour.
+
+Refer [here](https://github.com/spf13/cobra) for information about `cobra`.
+
+### Logrus
+
+`logrus` is used for handling logging across the application.
+
+Refer [here](https://github.com/sirupsen/logrus) for more information about `logrus`.
