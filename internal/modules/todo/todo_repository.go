@@ -85,7 +85,7 @@ func (repo *sqliteRepository) FindAllItems() ([]Item, error) {
 
 	var result []Item
 	query := fmt.Sprintf(
-		"SELECT * FROM %s", tableName,
+		"SELECT id, displayName, isCompleted, updatedAt, createdAt FROM %s ORDER BY isCompleted", tableName,
 	)
 	rows, err := repo.db.Query(query)
 	defer func(rows *sql.Rows) {
@@ -135,7 +135,7 @@ func (repo *sqliteRepository) FindItemById(id int64) (Item, error) {
 	}
 
 	query := fmt.Sprintf(
-		"SELECT * FROM %s WHERE id = %d",
+		"SELECT id, displayName, isCompleted, updatedAt, createdAt FROM %s WHERE id = %d",
 		tableName, id,
 	)
 	rows, err := repo.db.Query(query)

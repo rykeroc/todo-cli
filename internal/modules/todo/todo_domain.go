@@ -43,6 +43,7 @@ func (d *defaultDomain) CreateItem(name string) (Item, error) {
 	return NewItem(
 		0,
 		name,
+		0,
 		nowTime,
 		nowTime,
 	), nil
@@ -69,19 +70,23 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 	tw := tabwriter.NewWriter(&buffer, 0, tabWidth, padding, ' ', 0)
 
 	// Write header to the tabWriter
-	_, err := fmt.Fprintln(tw, "ID\tName\tLast Updated\tCreated")
+	_, err := fmt.Fprintln(tw, "Created\tID\tName\tLast Updated\tIs Completed")
 	if err != nil {
 		return "", fmt.Errorf("GetTabularItemList: Error writing table header to tabWriter: %v", err)
 	}
 
 	// Write separator
-	_, err = fmt.Fprintln(tw, "--\t----\t------------\t-------------")
+	_, err = fmt.Fprintln(tw, "-------\t--\t----\t------------\t------------")
 	if err != nil {
 		return "", fmt.Errorf("GetTabularItemList: Error writing table header to tabWriter: %v", err)
 	}
 
 	for _, item := range items {
-		formatting := "%d\t%s\t%s\t%s\n"
+		completedIcon := "❌"
+		if item.GetIsCompleted() == 1 {
+			completedIcon = "✅"
+		}
+		formatting := "%d\t%s\t%s\t%s\t%s\n"
 		_, err := fmt.Fprintf(
 			tw,
 			formatting,
@@ -89,6 +94,7 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 			item.GetName(),
 			item.GetUpdatedAt().Format(time.DateTime),
 			item.GetCreatedAt().Format(time.DateTime),
+			completedIcon,
 		)
 		if err != nil {
 			return "", fmt.Errorf(

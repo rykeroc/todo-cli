@@ -12,9 +12,11 @@ import (
 type Item interface {
 	GetId() int64
 	GetName() string
-	SetName(name string)
+	SetName(string)
+	GetIsCompleted() int8
+	SetIsCompleted(int8)
 	GetUpdatedAt() time.Time
-	SetUpdatedAt(time time.Time)
+	SetUpdatedAt(time.Time)
 	GetCreatedAt() time.Time
 }
 
@@ -24,10 +26,11 @@ type Item interface {
 //
 // Implements the Item interface.
 type item struct {
-	id        int64
-	name      string
-	updatedAt time.Time
-	createdAt time.Time
+	id          int64
+	name        string
+	isCompleted int8
+	updatedAt   time.Time
+	createdAt   time.Time
 }
 
 // NewItem godoc
@@ -36,14 +39,16 @@ type item struct {
 func NewItem(
 	id int64,
 	name string,
+	isCompleted int8,
 	updatedAt time.Time,
 	createdAt time.Time,
 ) Item {
 	return &item{
-		id:        id,
-		name:      name,
-		updatedAt: updatedAt,
-		createdAt: createdAt,
+		id:          id,
+		name:        name,
+		isCompleted: isCompleted,
+		updatedAt:   updatedAt,
+		createdAt:   createdAt,
 	}
 }
 
@@ -58,7 +63,7 @@ func NewItemFromRow(rows *sql.Rows) (Item, error) {
 	var item item
 	var updatedAtTimestamp, createdAtTimestamp int64
 
-	err := rows.Scan(&item.id, &item.name, &updatedAtTimestamp, &createdAtTimestamp)
+	err := rows.Scan(&item.id, &item.name, &item.isCompleted, &updatedAtTimestamp, &createdAtTimestamp)
 	if err != nil {
 		return nil, fmt.Errorf("NewItemFromRow: %v", err)
 	}
@@ -88,6 +93,20 @@ func (item *item) GetName() string {
 // Sets the name of the item.
 func (item *item) SetName(name string) {
 	item.name = name
+}
+
+// GetIsCompleted godoc
+//
+// Returns the item's completion flag.
+func (item *item) GetIsCompleted() int8 {
+	return item.isCompleted
+}
+
+// SetIsCompleted godoc
+//
+// Sets the item's completion flag.
+func (item *item) SetIsCompleted(isCompleted int8) {
+	item.isCompleted = isCompleted
 }
 
 // GetUpdatedAt godoc
