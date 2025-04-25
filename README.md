@@ -12,23 +12,41 @@ The application supports the following operations:
 
 Create a new TODO with a name and an optional due date.
 
+```bash
+todo create "<name>"
+```
+
 ### List all TODOs
 
 Display the information of all created TODOs.
 
-The TODOs can be sorter by:
-
-- Name
-- Due date
-- Created date
+```bash
+todo list
+```
 
 ### Edit TODO
 
-Update the name and due date of a TODO item by ID.
+Update the name of a TODO item by ID.
+
+```bash
+todo update <id> "<new name>"
+```
 
 ### Remove TODO
 
 Delete a TODO item by ID.
+
+```bash
+todo remove <id>
+```
+
+### Complete TODO
+
+Complete a TODO item by ID.
+
+```bash
+todo complete <id>
+```
 
 ## Tools
 
