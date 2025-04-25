@@ -35,7 +35,7 @@ func TestDefaultDomain_GetItemList(t *testing.T) {
 		items := []Item{
 			NewItem(1, "item 1", nowTime, nowTime),
 		}
-		result, err := domain.GetItemList(items)
+		result, err := domain.GetTabularItemList(items)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, result)
 
@@ -54,14 +54,14 @@ func TestDefaultDomain_GetItemList(t *testing.T) {
 	})
 
 	t.Run("should return 'No todo items...' when no items is nil", func(t *testing.T) {
-		result, err := domain.GetItemList(nil)
+		result, err := domain.GetTabularItemList(nil)
 
 		assert.NoError(t, err)
 		assert.Contains(t, result, "No todo items...")
 	})
 
 	t.Run("should return 'No todo items...' when no items is empty", func(t *testing.T) {
-		result, err := domain.GetItemList([]Item{})
+		result, err := domain.GetTabularItemList([]Item{})
 
 		assert.NoError(t, err)
 		assert.Contains(t, result, "No todo items...")

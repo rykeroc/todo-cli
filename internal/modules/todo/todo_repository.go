@@ -7,6 +7,7 @@ import (
 )
 
 // Repository godoc
+//
 // Define a repository for a collection of Item.
 type Repository interface {
 	PersistItem(Item) (int64, error)
@@ -16,6 +17,7 @@ type Repository interface {
 }
 
 // sqliteRepository godoc
+//
 // Define a repository for a collection of Item that adheres to Repository.
 type sqliteRepository struct {
 	db *sql.DB
@@ -30,10 +32,12 @@ func NewSqliteRepository(db *sql.DB) Repository {
 }
 
 // tableName godoc
+//
 // Name for the database table which hold the items.
 const tableName = "todos"
 
 // PersistItem godoc
+//
 // Adds an Item to the database.
 //
 // Returns -1 and an error on error.
@@ -67,6 +71,7 @@ func (repo *sqliteRepository) PersistItem(itemToPersist Item) (int64, error) {
 }
 
 // FindAllItems godoc
+//
 // Retrieves all items stored in the database table.
 //
 // Returns nil and error on error.
@@ -90,7 +95,7 @@ func (repo *sqliteRepository) FindAllItems() ([]Item, error) {
 				err = fmt.Errorf("FindAllItems failed to close rows: %w", closeErr)
 			} else {
 				// Log `closeErr` when `err` is already set
-				log.Printf("WARNING: FindAllItems failed to close rows (original error: %v): %v", err, closeErr)
+				log.Warnf("WARNING: FindAllItems failed to close rows (original error: %v): %v", err, closeErr)
 			}
 		}
 	}(rows)
@@ -115,6 +120,7 @@ func (repo *sqliteRepository) FindAllItems() ([]Item, error) {
 }
 
 // UpdateItemById godoc
+//
 // Update an Item in the database table using its ID.
 //
 // Returns -1 and error on error.
@@ -148,6 +154,7 @@ func (repo *sqliteRepository) UpdateItemById(itemToUpdate Item) (int64, error) {
 }
 
 // DeleteItemById godoc
+//
 // Delete an Item in the database table using its ID.
 //
 // Returns -1 and error on error.
@@ -174,6 +181,12 @@ func (repo *sqliteRepository) DeleteItemById(idToDelete int64) (int64, error) {
 	rowCount, err := result.RowsAffected()
 	if err != nil {
 		return -1, fmt.Errorf("DeleteItemById: %v", err)
+	}
+
+	if rowCount == 1 {
+		log.Infof("DeleteItemById: Successfullt deleted todo item with ID %d", idToDelete)
+	} else {
+		log.Infof("DeleteItemById: No item with ID %d", idToDelete)
 	}
 	return rowCount, nil
 }

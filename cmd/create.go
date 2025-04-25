@@ -18,13 +18,14 @@ var createCmd = &cobra.Command{
 	Example:
 		todo create "My new todo"
 	`,
-	Args: cobra.MaximumNArgs(1),
+	Args: cobra.MatchAll(cobra.ExactArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
 		dataSourceName := os.Getenv("DB_DATASOURCE_NAME")
 		config := data.NewSqliteDatabaseConfig(dataSourceName)
 		db := data.ConnectSqlDatabase(config)
+		domain := todo.NewDomain()
 		repository := todo.NewSqliteRepository(db)
-		useCase := todo.NewUseCase(repository)
+		useCase := todo.NewUseCase(domain, repository)
 
 		err := useCase.Create(args[0])
 		if err != nil {

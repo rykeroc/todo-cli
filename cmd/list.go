@@ -13,15 +13,16 @@ import (
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all todo items",
-	Long:  "Displays a list of all existing todo items",
-	Args:  cobra.MaximumNArgs(0),
+	Short: "List all todo items.",
+	Long:  "Displays a list of all existing todo items.",
+	Args:  cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		dataSourceName := os.Getenv("DB_DATASOURCE_NAME")
 		config := data.NewSqliteDatabaseConfig(dataSourceName)
 		db := data.ConnectSqlDatabase(config)
+		domain := todo.NewDomain()
 		repository := todo.NewSqliteRepository(db)
-		useCase := todo.NewUseCase(repository)
+		useCase := todo.NewUseCase(domain, repository)
 
 		err := useCase.List()
 		if err != nil {
