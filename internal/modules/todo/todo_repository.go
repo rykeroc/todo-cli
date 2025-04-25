@@ -181,13 +181,14 @@ func (repo *sqliteRepository) UpdateItemById(itemToUpdate Item) (int64, error) {
 	}
 
 	query := fmt.Sprintf(
-		"UPDATE %s SET displayName = ?, updatedAt = ? WHERE id = ?",
+		"UPDATE %s SET displayName = ?, updatedAt = ?, isCompleted = ? WHERE id = ?",
 		tableName,
 	)
 	result, err := repo.db.Exec(
 		query,
 		itemToUpdate.GetName(),
 		itemToUpdate.GetUpdatedAt().Unix(),
+		itemToUpdate.GetIsCompleted(),
 		itemToUpdate.GetId(),
 	)
 	if err != nil {

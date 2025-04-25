@@ -13,7 +13,8 @@ import (
 type Domain interface {
 	CreateItem(string) (Item, error)
 	GetTabularItemList([]Item) (string, error)
-	UpdateItem(string, Item) (Item, error)
+	UpdateItemName(string, Item) (Item, error)
+	CompleteItem(Item) (Item, error)
 }
 
 // defaultDomain godoc
@@ -112,21 +113,37 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 	return buffer.String(), nil
 }
 
-// UpdateItem godoc
+// UpdateItemName godoc
 //
-// Updates the item using the passed in arguments.
+// Updates the item name.
 //
 // Returns nil and error when name is empty or when the item is nil.
 //
 // Returns the updated item and nil on success.
-func (d *defaultDomain) UpdateItem(name string, item Item) (Item, error) {
+func (d *defaultDomain) UpdateItemName(name string, item Item) (Item, error) {
 	if len(name) == 0 {
-		return nil, fmt.Errorf("UpdateItem: name is empty")
+		return nil, fmt.Errorf("UpdateItemName: name is empty")
 	}
 	if item == nil {
-		return nil, fmt.Errorf("UpdateItem: item is nil")
+		return nil, fmt.Errorf("UpdateItemName: item is nil")
 	}
 	item.SetName(name)
+	item.SetUpdatedAt(time.Now())
+	return item, nil
+}
+
+// CompleteItem godoc
+//
+// Updates isCompleted on the item to 1 (true).
+//
+// Returns nil and error when the item is nil.
+//
+// Returns the updated item and nil on success.
+func (d *defaultDomain) CompleteItem(item Item) (Item, error) {
+	if item == nil {
+		return nil, fmt.Errorf("CompleteItem: item is nil")
+	}
+	item.SetIsCompleted(1)
 	item.SetUpdatedAt(time.Now())
 	return item, nil
 }

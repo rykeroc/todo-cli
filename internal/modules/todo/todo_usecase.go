@@ -10,6 +10,7 @@ type UseCase interface {
 	List() error
 	Remove(int64) (int64, error)
 	Update(int64, string) (int64, error)
+	Complete(int64) (int64, error)
 }
 
 // defaultUseCase godoc
@@ -128,17 +129,64 @@ func (uc *defaultUseCase) Update(itemId int64, newName string) (int64, error) {
 	}
 
 	// Update item
-	updatedItem, err := uc.domain.UpdateItem(newName, foundItem)
+	updatedItem, err := uc.domain.UpdateItemName(newName, foundItem)
 	// Error occurred while updating item
 	if err != nil {
 		return -1, fmt.Errorf("defaultUseCase.Update: Failed to update item with ID %d: %v", itemId, err)
 	}
 
-	// Delete the item by its ID
+	// Update the item by its ID
 	affectedRows, err := uc.repository.UpdateItemById(updatedItem)
 	// Error while persisting item update
 	if err != nil {
 		return -1, fmt.Errorf("defaultUseCase.Update: Failed to persists update for item with ID %d: %v", itemId, err)
+	}
+	// Item not deleted as it does not exist
+	if affectedRows == 0 {
+		return -1, nil
+	}
+
+	return itemId, nil
+}
+
+// Complete godoc
+//
+// Complete a todo item by ID.
+//
+// Returns -1 and nil if the item does not exist.
+//
+// Returns -1 and error on error.
+//
+// Returns updated item id and nil on success.
+func (uc *defaultUseCase) Complete(itemId int64) (int64, error) {
+	// Invalid item ID
+	if itemId == 0 {
+		return -1, nil
+	}
+
+	// Find item by ID
+	foundItem, err := uc.repository.FindItemById(itemId)
+	// Error occurred while finding item
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Complete: Failed to find item with ID %d: %v", itemId, err)
+	}
+	// Item not found
+	if foundItem == nil {
+		return -1, nil
+	}
+
+	// Complete item
+	completedItem, err := uc.domain.CompleteItem(foundItem)
+	// Err when completing item
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Complete: Failed to update item with ID %d: %v", itemId, err)
+	}
+
+	// Update the item by its ID
+	affectedRows, err := uc.repository.UpdateItemById(completedItem)
+	// Error while persisting item update
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Complete: Failed to persists update for item with ID %d: %v", itemId, err)
 	}
 	// Item not deleted as it does not exist
 	if affectedRows == 0 {

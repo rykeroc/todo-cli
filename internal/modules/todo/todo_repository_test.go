@@ -12,12 +12,14 @@ var testItems = []Item{
 	NewItem(
 		0,
 		"item",
+		0,
 		time.Now(),
 		time.Now(),
 	),
 	NewItem(
 		0,
 		"another item",
+		0,
 		time.Now(),
 		time.Now(),
 	),
@@ -107,6 +109,7 @@ func TestUpdateItemById_Success(t *testing.T) {
 		itemToUpdate := NewItem(
 			1,
 			"new name",
+			0,
 			time.Now(),
 			testItems[0].GetCreatedAt(),
 		)

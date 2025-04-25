@@ -33,7 +33,7 @@ func TestDefaultDomain_GetItemList(t *testing.T) {
 	t.Run("should return tabular list", func(t *testing.T) {
 		nowTime := time.Now()
 		items := []Item{
-			NewItem(1, "item 1", nowTime, nowTime),
+			NewItem(1, "item 1", 0, nowTime, nowTime),
 		}
 		result, err := domain.GetTabularItemList(items)
 		assert.NoError(t, err)
@@ -75,12 +75,12 @@ func TestDefaultDomain_UpdateItem(t *testing.T) {
 		initUpdated := time.Now()
 
 		item := NewItem(
-			0, initName, initCreated, initUpdated,
+			0, initName, 0, initCreated, initUpdated,
 		)
 
 		newName := "new name"
 
-		item, err := domain.UpdateItem(newName, item)
+		item, err := domain.UpdateItemName(newName, item)
 
 		assert.NoError(t, err)
 		assert.Equal(t, newName, item.GetName())
@@ -94,12 +94,12 @@ func TestDefaultDomain_UpdateItem(t *testing.T) {
 		initUpdated := time.Now()
 
 		item := NewItem(
-			0, initName, initCreated, initUpdated,
+			0, initName, 0, initCreated, initUpdated,
 		)
 
 		newName := ""
 
-		item, err := domain.UpdateItem(newName, item)
+		item, err := domain.UpdateItemName(newName, item)
 
 		assert.Error(t, err)
 		assert.Nil(t, item)
@@ -108,7 +108,7 @@ func TestDefaultDomain_UpdateItem(t *testing.T) {
 	t.Run("should return error when item is nil", func(t *testing.T) {
 		newName := "new name"
 
-		item, err := domain.UpdateItem(newName, nil)
+		item, err := domain.UpdateItemName(newName, nil)
 
 		assert.Error(t, err)
 		assert.Nil(t, item)
