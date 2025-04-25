@@ -12,6 +12,7 @@ import (
 type Repository interface {
 	PersistItem(Item) (int64, error)
 	FindAllItems() ([]Item, error)
+	FindItemById(int64) (Item, error)
 	UpdateItemById(Item) (int64, error)
 	DeleteItemById(int64) (int64, error)
 }
@@ -117,6 +118,53 @@ func (repo *sqliteRepository) FindAllItems() ([]Item, error) {
 	}
 
 	return result, nil
+}
+
+// FindItemById godoc
+//
+// Get a persisted todo item by its ID.
+//
+// Returns nil and nil when no item is found.
+//
+// Returns nil and error on error.
+//
+// Returns the found Item and nil on success.
+func (repo *sqliteRepository) FindItemById(id int64) (Item, error) {
+	if id == 0 {
+		return nil, nil
+	}
+
+	query := fmt.Sprintf(
+		"SELECT * FROM %s WHERE id = %d",
+		tableName, id,
+	)
+	rows, err := repo.db.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("FindItemById: %v", err)
+	}
+	// Close rows on exit
+	defer func(rows *sql.Rows) {
+		closeErr := rows.Close()
+		if closeErr != nil {
+			if err == nil {
+				// Return `closeErr` if `err` is not set already
+				err = fmt.Errorf("FindItemById: Failed to close rows: %w", closeErr)
+			} else {
+				// Log `closeErr` when `err` is already set
+				log.Warnf("WARNING: FindItemById: Failed to close rows (original error: %v): %v", err, closeErr)
+			}
+		}
+	}(rows)
+
+	if !rows.Next() {
+		return nil, nil
+	}
+
+	item, err := NewItemFromRow(rows)
+	if err != nil {
+		return nil, fmt.Errorf("FindItemById: %v", err)
+	}
+	return item, nil
 }
 
 // UpdateItemById godoc

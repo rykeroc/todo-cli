@@ -9,6 +9,7 @@ type UseCase interface {
 	Create(string) error
 	List() error
 	Remove(int64) (int64, error)
+	Update(int64, string) (int64, error)
 }
 
 // defaultUseCase godoc
@@ -86,7 +87,58 @@ func (uc *defaultUseCase) Remove(itemId int64) (int64, error) {
 	// Delete the item by its ID
 	affectedRows, err := uc.repository.DeleteItemById(itemId)
 	if err != nil {
-		return -1, fmt.Errorf("defaultUseCase.Remove: Failed to delete item by ID: %v", err)
+		return -1, fmt.Errorf("defaultUseCase.Remove: Failed to delete item with ID %d: %v", itemId, err)
+	}
+	// Item not deleted as it does not exist
+	if affectedRows == 0 {
+		return -1, nil
+	}
+
+	return itemId, nil
+}
+
+// Update godoc
+//
+// Update an item's name by itemId.
+//
+// Returns -1 and nil if the item does not exist.
+//
+// Returns -1 and error on error.
+//
+// Returns updated item id and nil on success.
+func (uc *defaultUseCase) Update(itemId int64, newName string) (int64, error) {
+	// Invalid item ID
+	if itemId == 0 {
+		return -1, nil
+	}
+	// New name is empty
+	if len(newName) == 0 {
+		return -1, fmt.Errorf("defaultUseCase.Update: New name for item is empty")
+	}
+
+	// Find item by ID
+	foundItem, err := uc.repository.FindItemById(itemId)
+	// Error occurred while finding item
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Update: Failed to find item with ID %d: %v", itemId, err)
+	}
+	// Item not found
+	if foundItem == nil {
+		return -1, nil
+	}
+
+	// Update item
+	updatedItem, err := uc.domain.UpdateItem(newName, foundItem)
+	// Error occurred while updating item
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Update: Failed to update item with ID %d: %v", itemId, err)
+	}
+
+	// Delete the item by its ID
+	affectedRows, err := uc.repository.UpdateItemById(updatedItem)
+	// Error while persisting item update
+	if err != nil {
+		return -1, fmt.Errorf("defaultUseCase.Update: Failed to persists update for item with ID %d: %v", itemId, err)
 	}
 	// Item not deleted as it does not exist
 	if affectedRows == 0 {

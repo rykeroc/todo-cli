@@ -69,7 +69,7 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 	tw := tabwriter.NewWriter(&buffer, 0, tabWidth, padding, ' ', 0)
 
 	// Write header to the tabWriter
-	_, err := fmt.Fprintln(tw, "ID\tName\tLast Updated\tCreation Date")
+	_, err := fmt.Fprintln(tw, "ID\tName\tLast Updated\tCreated")
 	if err != nil {
 		return "", fmt.Errorf("GetTabularItemList: Error writing table header to tabWriter: %v", err)
 	}
@@ -87,8 +87,8 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 			formatting,
 			item.GetId(),
 			item.GetName(),
-			item.GetUpdatedAt().Format(time.DateOnly),
-			item.GetCreatedAt().Format(time.DateOnly),
+			item.GetUpdatedAt().Format(time.DateTime),
+			item.GetCreatedAt().Format(time.DateTime),
 		)
 		if err != nil {
 			return "", fmt.Errorf(
