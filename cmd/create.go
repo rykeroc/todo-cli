@@ -11,14 +11,11 @@ import (
 
 // createCmd represents the `create` command
 var createCmd = &cobra.Command{
-	Use:   "create",
-	Short: "Create a todo item.",
-	Long: `Create a todo item by specifying a name:
-	
-	Example:
-		todo create "My new todo"
-	`,
-	Args: cobra.MatchAll(cobra.ExactArgs(1)),
+	Use:     `create "<item name>"`,
+	Example: `todo create "My new todo"`,
+	Short:   "Create a todo item.",
+	Long:    `Create a todo item with a specified name.`,
+	Args:    cobra.MatchAll(cobra.ExactArgs(1)),
 	Run: func(cmd *cobra.Command, args []string) {
 		dataSourceName := os.Getenv("DB_DATASOURCE_NAME")
 		config := data.NewSqliteDatabaseConfig(dataSourceName)

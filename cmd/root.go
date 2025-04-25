@@ -13,10 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "todo",
 	Short: "A simple CLI app for todo items.",
-	Long:  "TODO CLI is a simple CLI app for todo items.",
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Long:  "`todo` is a simple CLI app for todo items.",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

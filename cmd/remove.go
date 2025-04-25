@@ -12,10 +12,11 @@ import (
 
 // removeCmd represents the remove command
 var removeCmd = &cobra.Command{
-	Use:   "remove",
-	Short: "Delete a todo item.",
-	Long:  "Delete an existing todo item by specifying it's ID.",
-	Args:  cobra.ExactArgs(1),
+	Use:     `remove <item id>`,
+	Example: `todo remove 1`,
+	Short:   "Delete a todo item.",
+	Long:    "Delete an existing todo item by specifying it's ID.",
+	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		idToDelete, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
