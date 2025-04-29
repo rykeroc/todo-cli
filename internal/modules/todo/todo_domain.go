@@ -71,13 +71,13 @@ func (d *defaultDomain) GetTabularItemList(items []Item) (string, error) {
 	tw := tabwriter.NewWriter(&buffer, 0, tabWidth, padding, ' ', 0)
 
 	// Write header to the tabWriter
-	_, err := fmt.Fprintln(tw, "Created\tID\tName\tLast Updated\tIs Completed")
+	_, err := fmt.Fprintln(tw, "ID\tName\tLast Updated\tCreated\tIs Completed")
 	if err != nil {
 		return "", fmt.Errorf("GetTabularItemList: Error writing table header to tabWriter: %v", err)
 	}
 
 	// Write separator
-	_, err = fmt.Fprintln(tw, "-------\t--\t----\t------------\t------------")
+	_, err = fmt.Fprintln(tw, "--\t----\t------------\t-------\t------------")
 	if err != nil {
 		return "", fmt.Errorf("GetTabularItemList: Error writing table header to tabWriter: %v", err)
 	}

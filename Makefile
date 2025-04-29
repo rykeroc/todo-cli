@@ -1,11 +1,5 @@
 # Makefile
 
-# Include .env file
-ifneq (,$(wildcard .env))
-    include .env
-    export
-endif
-
 # Variables
 MIGRATIONS_DIR=./migrations
 BIN_NAME=todo

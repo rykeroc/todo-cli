@@ -2,11 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rykeroc/todo-cli/internal/data"
-	"github.com/rykeroc/todo-cli/internal/modules/todo"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
 	"strconv"
 )
 
@@ -25,14 +22,7 @@ var removeCmd = &cobra.Command{
 			return
 		}
 
-		dataSourceName := os.Getenv("DB_DATASOURCE_NAME")
-		config := data.NewSqliteDatabaseConfig(dataSourceName)
-		db := data.ConnectSqlDatabase(config)
-		domain := todo.NewDomain()
-		repository := todo.NewSqliteRepository(db)
-		useCase := todo.NewUseCase(domain, repository)
-
-		deletedItemId, err := useCase.Remove(idToDelete)
+		deletedItemId, err := app.TodoUseCase.Remove(idToDelete)
 		if err != nil {
 			log.Errorf("removeCmd: %v", err)
 			fmt.Println("An error occurred while removing the todo item")

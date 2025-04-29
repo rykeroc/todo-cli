@@ -2,11 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/rykeroc/todo-cli/internal/data"
-	"github.com/rykeroc/todo-cli/internal/modules/todo"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"os"
 	"strconv"
 )
 
@@ -26,14 +23,7 @@ var updateCmd = &cobra.Command{
 		}
 		newName := args[1]
 
-		dataSourceName := os.Getenv("DB_DATASOURCE_NAME")
-		config := data.NewSqliteDatabaseConfig(dataSourceName)
-		db := data.ConnectSqlDatabase(config)
-		domain := todo.NewDomain()
-		repository := todo.NewSqliteRepository(db)
-		useCase := todo.NewUseCase(domain, repository)
-
-		updatedItemId, err := useCase.Update(idToUpdate, newName)
+		updatedItemId, err := app.TodoUseCase.Update(idToUpdate, newName)
 		if err != nil {
 			log.Errorf("updateCmd: %v", err)
 			fmt.Println("An error occurred while updating the todo item")
