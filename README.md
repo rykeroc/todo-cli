@@ -4,7 +4,19 @@
 
 This is a simple TODO CLI application, created with GoLang, to learn more about GoLang and to practice clean architecture.
 
-## Features
+## Setup
+
+Compile the binary into `bin/` with the following command:
+
+```bash
+make build
+```
+
+NOTE: If you do not have make installed follow the instructions [here](https://www.gnu.org/software/make/)
+
+See below for usage
+
+## Usage
 
 The application supports the following operations:
 
